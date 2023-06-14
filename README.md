@@ -1,26 +1,87 @@
-#  Как работать с репозиторием финального задания
+# Kittygram - социальная сеть для размещения фотографий котиков.
 
-## Что нужно сделать
 
-Настроить запуск проекта Kittygram в контейнерах и CI/CD с помощью GitHub Actions
+## **Описание проекта**
 
-## Как проверить работу с помощью автотестов
+Пользователи могут регистрироваться, загружать фотографии своих котиков и смотреть котиков других пользователей.
 
-В корне репозитория создайте файл tests.yml со следующим содержимым:
-```yaml
-repo_owner: ваш_логин_на_гитхабе
-kittygram_domain: полная ссылка (https://доменное_имя) на ваш проект Kittygram
-taski_domain: полная ссылка (https://доменное_имя) на ваш проект Taski
-dockerhub_username: ваш_логин_на_докерхабе
+Проект находится по адресу: https://vkitty.hopto.org/
+
+## **Стэк технологий**
+
+* Python 3.9
+* Django 3.2.3
+* djangorestframework 3.12.4
+* djoser 2.1.0
+* webcolors 1.11.1
+* gunicorn 20.1.0
+* psycopg2-binary 2.9.6
+* pytest-django 4.4.0
+* pytest-pythonpath 0.7.3
+* pytest 6.2.4
+* PyYAML 6.0
+* python-dotenv 1.0.0
+
+## Локальный запуск проекта
+
+Клонировать репозиторий и перейти в него в командной строке:
+
+```bash
+git clone ...
+cd kittygram_final
 ```
 
-Скопируйте содержимое файла `.github/workflows/main.yml` в файл `kittygram_workflow.yml` в корневой директории проекта.
+Cоздать и активировать виртуальное окружение, установить зависимости:
 
-Для локального запуска тестов создайте виртуальное окружение, установите в него зависимости из backend/requirements.txt и запустите в корневой директории проекта `pytest`.
+```bash
+python3 -m venv venv
+source venv/scripts/activate
+python -m pip install --upgrade pip
+pip install -r backend/requirements.txt
+```
 
-## Чек-лист для проверки перед отправкой задания
+Установить [docker compose](https://www.docker.com/) на свой компьютер.
 
-- Проект Taski доступен по доменному имени, указанному в `tests.yml`.
-- Проект Kittygram доступен по доменному имени, указанному в `tests.yml`.
-- Пуш в ветку main запускает тестирование и деплой Kittygram, а после успешного деплоя вам приходит сообщение в телеграм.
-- В корне проекта есть файл `kittygram_workflow.yml`.
+Запустить проект через docker-compose:
+
+```bash
+docker compose -f docker-compose.yml up --build -d
+```
+
+Выполнить миграции:
+
+```bash
+docker compose -f docker-compose.yml exec backend python manage.py migrate
+```
+
+Собрать статику и скопировать ее:
+
+```bash
+docker compose -f docker-compose.yml exec backend python manage.py collectstatic
+docker compose -f docker-compose.yml exec backend cp -r /app/static_backend/. /backend_static/static/
+```
+
+
+## Настройка CI/CD
+
+* Файл workflow
+```
+kittygram/.github/workflows/main.yml
+```
+
+* Добавить секреты
+```
+DOCKER_PASSWORD - пароль от аккаунта DockerHub
+DOCKER_USERNAME - логин DockerHub
+HOST - IP адресс сервера
+USER - логин на сервере
+SSH_KEY - SSH ключ
+SSH_PASSPHRASE - пароль от сервера
+TELEGRAM_TO - ваш Telegram ID
+TELEGRAM_TOKEN - токена вашего Telegram бота
+```
+
+## Автор
+Владас Куодис
+
+

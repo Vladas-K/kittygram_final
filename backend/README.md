@@ -43,9 +43,14 @@ pip install -r requirements.txt
 ```
 python3 manage.py migrate
 ```
+Установить пакет gunicorn:
+
+```
+pip install gunicorn==20.1.0
+```
 
 Запустить проект:
 
 ```
-python3 manage.py runserver
+gunicorn --bind 0.0.0.0:9000 backend.wsgi 
 ```
