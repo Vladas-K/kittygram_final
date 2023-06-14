@@ -11,6 +11,7 @@ services:
     env_file: .env
     volumes:
       - pg_data_production:/var/lib/postgresql/data
+    restart: always
   backend:
     image: vlad2505/kittygram_backend
     env_file: .env
@@ -19,6 +20,7 @@ services:
       - media:/app/media
     depends_on:
       - db
+    restart: on-failure
       
   frontend:
     image: vlad2505/kittygram_frontend
@@ -33,4 +35,5 @@ services:
       - static_volume:/static/
       - media:/media
     ports:
-      - 9000:80
+      - ${EXTERNAL_PORT}:80
+    restart: always
