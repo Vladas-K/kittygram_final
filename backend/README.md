@@ -52,5 +52,5 @@ pip install gunicorn==20.1.0
 Запустить проект:
 
 ```
-gunicorn --bind 0.0.0.0:9000 backend.wsgi 
+make run
 ```
